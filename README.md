@@ -14,6 +14,7 @@ I've mostly been writing C++ for the last year or two and haven't touched Java m
 ## Compiling and running
 
 ```bash
+mkdir bin
 javac -d bin src/*.java
 java -cp bin edu.iastate.cs472.proj1.PuzzleSolver
 ```
