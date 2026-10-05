@@ -8,5 +8,5 @@ package edu.iastate.cs472.proj1;
  */
 public enum Heuristic 
 {
-	tile_mismatch, manhattan_distance, double_move
+    TILE_MISMATCH, MANHATTAN_DISTANCE, DOUBLE_MOVE
 }

@@ -23,10 +23,10 @@ public class OrderedStateList
 	/**
 	 * Implementation of a circular doubly-linked list with a dummy head node.
 	 */
-	  private State head;           // dummy node as the head of the sorted linked list 
-	  private int size = 0;
+	  private State     head;           // dummy node as the head of the sorted linked list 
+	  private int       size = 0;
 	  
-	  private boolean isOPEN;       // true if this OrderedStateList object is the list OPEN and false 
+	  private boolean   isOPEN;       // true if this OrderedStateList object is the list OPEN and false 
 	                                // if the list CLOSED.
 
 	  /**

@@ -26,15 +26,12 @@ import java.util.Comparator;
 public class StateComparator implements Comparator<State>
 {
 	@Override
-    public int compare(State s1, State s2)
+    public int compare(State a, State b)
     {
         for (int i = 0; i < 9; i++)
         {
-            if (s1.board[i] < s2.board[i])
-                return -1;
-
-            if (s1.board[i] > s2.board[i])
-                return 1;
+            if (a.board[i] < b.board[i]) return -1;
+            if (a.board[i] > b.board[i]) return 1;
         }
 
         return 0;

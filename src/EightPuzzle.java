@@ -31,13 +31,13 @@ public class EightPuzzle
             return "No solution exists for the following initial state:\n\n" + s0.toString();
         }
 
-        Heuristic h[]   = {Heuristic.tile_mismatch, Heuristic.manhattan_distance, Heuristic.double_move};
+        Heuristic heuristics[]  = {Heuristic.TILE_MISMATCH, Heuristic.MANHATTAN_DISTANCE, Heuristic.DOUBLE_MOVE};
 
-        String[] moves  = new String[3];
+        String[] moves          = new String[3];
 
         for (int i = 0; i < 3; i++)
         {
-            moves[i] = AStar(s0, h[i]);
+            moves[i] = AStar(s0, heuristics[i]);
         }
 
         return moves[0] + "\n" + moves[1] + "\n" + moves[2];
@@ -68,7 +68,7 @@ public class EightPuzzle
 
         Move[] moves;
 
-        if (heuristic == Heuristic.double_move)
+        if (heuristic == Heuristic.DOUBLE_MOVE)
         {
             moves = Move.values();
         }
@@ -107,15 +107,11 @@ public class EightPuzzle
                 {
                     continue;
                 }
+                if (successor == null)                  continue;
+                if (CLOSE.findState(successor) != null) continue;
 
-                if (successor == null)
-                    continue;
-
-                if (CLOSE.findState(successor) != null)
-                    continue;
 
                 State existing = OPEN.findState(successor);
-
                 if (existing == null)
                 {
                     OPEN.addState(successor);
@@ -131,18 +127,21 @@ public class EightPuzzle
     }	
 	
 
+
+    // couple of helper functions using a temp _result
+
     private static String createSolutionTitle(Heuristic heuristic, int count)
     {
         String _result = "";
-        if (heuristic == Heuristic.tile_mismatch)
+        if (heuristic == Heuristic.TILE_MISMATCH)
         {
             _result = (count - 1) + " moves in total (heuristic: number of mismatched tiles)\n";
         }
-        else if (heuristic == Heuristic.manhattan_distance)
+        else if (heuristic == Heuristic.MANHATTAN_DISTANCE)
         {
             _result = (count - 1) + " moves in total (heuristic: the Manhattan distance)\n";
         }
-        else if (heuristic == Heuristic.double_move)
+        else if (heuristic == Heuristic.DOUBLE_MOVE)
         {
             _result = (count - 1) + " moves in total (heuristic: double moves allowed)\n";
         }
@@ -188,8 +187,8 @@ public class EightPuzzle
 	 */
     private static String solutionPath(State goal, Heuristic heuristic)
     {
-        int count       = 0;
-        State current   = goal;
+        int     count       = 0;
+        State   current     = goal;
 
         while (current != null)
         {

@@ -37,9 +37,8 @@ public class PuzzleSolver
     
     public static void main(String[] args) throws FileNotFoundException, IllegalArgumentException
     {
-        Scanner scanner = new Scanner(new File("input/8Puzzle.txt"));
-
-        int[] input = new int[9];
+        Scanner scanner     = new Scanner(new File("input/8Puzzle.txt"));
+        int[]   input       = new int[9];
 
         for (int i = 0; i < 9; i++)
         {

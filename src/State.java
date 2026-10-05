@@ -28,10 +28,8 @@ import java.util.Arrays;
 public class State implements Cloneable, Comparable<State>
 {
     public static final int[]   STATE_GOAL = {1, 2, 3, 8, 0, 4, 7, 6, 5};
-    public static int           state_counter = 1;
 	public static Heuristic     heuristic; // heuristic used. shared by all the states. 
 
-    public int      id;
 
 	public int[]    board; 		// configuration of tiles 
 	
@@ -41,14 +39,13 @@ public class State implements Cloneable, Comparable<State>
 	
 	public Move     move;           // the move that generated this state from its predecessor
 	public int      moves_count; 	    // number of moves from the initial state to this state
-
 	
-	private int     mismatched_tiles_count = -1;    // number of mismatched tiles between this state 
-	                                        // and the goal state; negative if not computed yet.
-	private int     manhattan_distnace = -1;     // Manhattan distance between this state and the 
-	                                        // goal state; negative if not computed yet. 
-	private int     single_and_double_moves_count = -1;  // number of single and double moves with each double 
-										    // move counted as one; negative if not computed yet. 
+	private int     mismatched_tiles_count          = -1;       // number of mismatched tiles between this state 
+	                                                            // and the goal state; negative if not computed yet.
+	private int     manhattan_distnace_count        = -1;       // Manhattan distance between this state and the 
+	                                                            // goal state; negative if not computed yet. 
+	private int     single_and_double_moves_count   = -1;       // number of single and double moves with each double 
+										                        // move counted as one; negative if not computed yet. 
 
 	
 	/**
@@ -67,9 +64,6 @@ public class State implements Cloneable, Comparable<State>
     public State(int[] _input) throws IllegalArgumentException 
     {
         this.board          = _input;
-
-        state_counter++;
-        this.id             = state_counter;
 
         this.previous       = null;
         this.next           = null;
@@ -136,8 +130,8 @@ public class State implements Cloneable, Comparable<State>
      */                                  
     public State successorState(Move m) throws IllegalArgumentException
     {
-        int blank       = findBlankSquare(this.board);
-        int[] newBoard  = this.board.clone();
+        int     blank       = findBlankSquare(this.board);
+        int[]   newBoard    = this.board.clone();
 
         switch (m)
         {
@@ -199,6 +193,8 @@ public class State implements Cloneable, Comparable<State>
                 throw new IllegalArgumentException("Invalid move");
         }
 
+
+
         State child         = new State(newBoard);
 
         child.predecessor   = this;
@@ -224,8 +220,8 @@ public class State implements Cloneable, Comparable<State>
     // using a fenwick tree solution!! could've just as easily done a simple brute force solution which would've been a fine solution given the static size of the 8-puzzle problem
    public boolean solvable()
     {
-        int[] bit           = new int[10];
-        int inversions      = 0;
+        int[]   bit         = new int[10];
+        int     inversions  = 0;
 
         for (int i = 8; i >= 0; i--)
         {
@@ -347,11 +343,11 @@ public class State implements Cloneable, Comparable<State>
     {
         switch (heuristic)
         {
-            case tile_mismatch: return moves_count + mismatchedTilesCompute();
+            case TILE_MISMATCH:         return moves_count + mismatchedTilesCompute();
 
-            case manhattan_distance: return moves_count + manhattanDistanceCompute();
+            case MANHATTAN_DISTANCE:    return moves_count + manhattanDistanceCompute();
 
-            case double_move: return moves_count + singleDoubleMovesCompute();
+            case DOUBLE_MOVE:           return moves_count + singleDoubleMovesCompute();
 
             default: throw new IllegalArgumentException("Invalid heuristic");
         }
@@ -369,12 +365,12 @@ public class State implements Cloneable, Comparable<State>
     @Override
     public int compareTo(State s)
     {
-        int c1 = this.cost();
-        int c2 = s.cost();
+        int a = this.cost();
+        int b = s.cost();
 
-        if (c1 < c2) return -1;
+        if (a < b) return -1;
 
-        if (c1 > c2) return 1;
+        if (a > b) return 1;
 
         return 0;
     } 
@@ -411,7 +407,7 @@ public class State implements Cloneable, Comparable<State>
     // this is the only method where the single array complicates things, otherwise, for the most part, it has been a much simpler implmentation than the matrix int[][]
     private int manhattanDistanceCompute()
     {
-        if (manhattan_distnace >= 0) return manhattan_distnace;
+        if (manhattan_distnace_count >= 0) return manhattan_distnace_count;
 
         int distance = 0;
 
@@ -438,17 +434,33 @@ public class State implements Cloneable, Comparable<State>
             distance        += Math.abs(col - goal_index % 3);
         }
 
-        manhattan_distnace = distance;
+        manhattan_distnace_count = distance;
 
         return distance;
     }	
-	/**
-	 * Return the value of the private variable numSingleDoubleMoves if it is non-negative, and compute its value 
-	 * otherwise. 
-	 * 
-	 * @return the value of the private variable numSingleDoubleMoves that bounds from below the number of moves, 
-	 *         single or double, which will take this state to the goal state.
-	 */
+
+
+
+    /**
+     * Return the value of the private variable numSingleDoubleMoves if it is
+     * non-negative, and compute its value otherwise.
+     *
+     * The heuristic used when both single and double moves are allowed is
+     *
+     *     h3(s) = ceil(ManhattanDistance(s) / 2).
+     *
+     * Recall, a single move can decrease the total Manhattan distance by at most 1,
+     * while a double move can decrease it by at most 2. Further, in 2k manhattan distance single moves, 
+     * using double moves, the moves count can decrease to merely k. 
+     * Thus, if the current double move distance is D, and a single move is k 
+     * any solution must satisfy 2k >= D, or k >= ceil(D / 2).
+     *
+     * Therefore, h3(s) is a lower bound on the actual minimum number of moves needed
+     * to reach the goal, so the heuristic is admissible.
+     *
+     * @return a lower bound on the number of single or double moves required
+     *         to reach the goal state from this state.
+     */
     private int singleDoubleMovesCompute()
     {
         if (single_and_double_moves_count >= 0) return single_and_double_moves_count;
@@ -457,6 +469,5 @@ public class State implements Cloneable, Comparable<State>
 
         return single_and_double_moves_count;
     }
-
 
 }
