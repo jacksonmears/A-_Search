@@ -6,10 +6,10 @@ COMS 4720/5720 Project 1 (A* search with three heuristics: mismatched tiles, Man
 
 I've mostly been writing C++ for the last year or two and haven't touched Java much, so apologies if some of this doesn't look like typical Java, or if I missed a handy standard library method. A few things I did differently from the skeleton:
 
-- **Board is a flat `int[]` instead of `int[][]`.** It's stored row-major, so I index with math (`row = i / 3`, `col = i % 3`). Felt simpler to me than juggling two indices.
-- **Renamed a bunch of methods and variables** for my own clarity and preferences. The required interfaces and behavior are all still there.
-- **`remove` is called `pop` in `OrderedStateList`.** It made more sense to me coming from C++ containers. It does the same thing: removes and returns the first state in the list, which is the min-cost state in OPEN.
-- **Different tab width.** I wrote everything in nvim, so the indentation of my lines may look a little different from the skeleton's.
+- Board is a flat `int[]` instead of `int[][]`. It's stored row-major, so I index with math (`row = i / 3`, `col = i % 3`). Felt simpler to me than juggling two indices.
+- Renamed a bunch of methods and variables for my own clarity and preferences. The required interfaces and behavior are all still there.
+- `remove` is called `pop` in `OrderedStateList`. It made more sense to me coming from C++ containers. However, it's still functionally the same thing, removes and returns the first state in the list, which is the min-cost state in OPEN.
+- Different tab width. I wrote everything in nvim, so the indentation of my lines may look a little different from the skeleton's.
 
 ## Compiling and running
 
