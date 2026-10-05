@@ -445,6 +445,8 @@ public class State implements Cloneable, Comparable<State>
      * Return the value of the private variable numSingleDoubleMoves if it is
      * non-negative, and compute its value otherwise.
      *
+     * FULL WRITE UP IN THE README !!!!!!
+     * 
      * The heuristic used when both single and double moves are allowed is
      *
      *     h3(s) = ceil(ManhattanDistance(s) / 2).
